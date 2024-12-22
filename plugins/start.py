@@ -11,7 +11,7 @@ from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, 
 from pyrogram.errors import FloodWait, UserIsBlocked, InputUserDeactivated, UserNotParticipant
 
 from bot import Bot
-from config import ADMINS, OWNER_ID, FORCE_MSG, START_MSG, CUSTOM_CAPTION, DISABLE_CHANNEL_BUTTON, PROTECT_CONTENT
+from config import ADMINS, OWNER_ID, FORCE_MSG, START_MSG, CUSTOM_CAPTION, DISABLE_CHANNEL_BUTTON, PROTECT_CONTENT, START_PIC, FORCE_PIC
 from helper_func import subscribed1, subscribed2, encode, decode, get_messages
 from database.database import add_user, del_user, full_userbase, present_user
 async def delete_after_delay(message: Message, delay):
@@ -89,8 +89,7 @@ async def start_command(client: Client, message: Message):
                 await msg.copy(chat_id=message.from_user.id, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup, protect_content=PROTECT_CONTENT)
             except:
                 pass
-        await message.reply_text(f"<b><i>\n──────────────────────────\n➥ 𝚃𝚑𝚒𝚜 𝙼𝚊𝚜𝚜𝚊𝚐𝚎 𝚆𝚒𝚕𝚕 𝙱𝚎 𝙳𝚎𝚕𝚎𝚝𝚎𝚍 𝙸𝚗 30 𝙼𝚒𝚗𝚞𝚝𝚎𝚜.\n➥ 𝙼𝚞𝚜𝚝 𝙹𝚘𝚒𝚗 𝙾𝚞𝚛 𝙲𝚑𝚊𝚗𝚗𝚎𝚕.\n──────────────────────────\n⚡@Cutei_Girls⚡️\n──────────────────────────\n</i></b>")
-        await message.reply_text(f"<b>➥Tᴇᴀᴍ Hᴇᴀᴠᴇɴ \n─────────────────────────────────\n➥𝙸𝚏 𝚈𝚘𝚞 𝙷𝚊𝚟𝚎 𝙰𝚗𝚢 𝙿𝚛𝚘𝚋𝚕𝚎𝚖 𝚁𝚎𝚕𝚊𝚝𝚎𝚍 𝚃𝚘 𝙲𝚘𝚗𝚝𝚎𝚗𝚝 𝚃𝚑𝚊𝚝 𝚆𝚊𝚜 𝚁𝚎𝚖𝚘𝚟𝚎𝚍 𝙸𝚗 𝙲𝚑𝚊𝚗𝚗𝚎𝚕/𝙱𝚘𝚝 𝙸𝚜 𝙽𝚘𝚝 𝚆𝚘𝚛𝚔𝚒𝚗𝚐 𝙿𝚛𝚘𝚙𝚎𝚛𝚕𝚢 𝚃𝚑𝚎𝚗 𝚈𝚘𝚞 𝙲𝚊𝚗 𝙲𝚘𝚗𝚝𝚊𝚌𝚝 𝙷𝚎𝚛𝚎 𝙶𝚒𝚟𝚎𝚗 𝙱𝚎𝚕𝚘𝚠.\n➥𝙲𝚘𝚗𝚝𝚎𝚌𝚝 𝙾𝚠𝚗𝚎𝚛: @Heaven_Owner_Bot\n➥𝙲𝚘𝚗𝚝𝚎𝚌𝚝 𝙰𝚍𝚖𝚒𝚗: @Orignal_Owner_bot\n─────────────────────────────────</b>")
+        await message.reply_text(f"<b>➥ 𝚃𝚑𝚒𝚜 𝙼𝚊𝚜𝚜𝚊𝚐𝚎 𝚆𝚒𝚕𝚕 𝙱𝚎 𝙳𝚎𝚕𝚎𝚝𝚎𝚍 𝙸𝚗 30 𝙼𝚒𝚗𝚞𝚝𝚎𝚜.</b>")
         
         return
     else:
@@ -102,19 +101,32 @@ async def start_command(client: Client, message: Message):
                 ]
             ]
                 )
-        await message.reply_text(
-            text = START_MSG.format(
-                first = message.from_user.first_name,
-                last = message.from_user.last_name,
-                username = None if not message.from_user.username else '@' + message.from_user.username,
-                mention = message.from_user.mention,
-                id = message.from_user.id
-            ),
-            reply_markup = reply_markup,
-            disable_web_page_preview = True,
-            quote = True
-        )
-        return   
+        if START_PIC:
+            await message.reply_photo(
+                photo=START_PIC,
+                caption=START_MSG.format(
+                    first=message.from_user.first_name,
+                    last=message.from_user.last_name,
+                    username=None if not message.from_user.username else '@' + message.from_user.username,
+                    mention=message.from_user.mention,
+                    id=message.from_user.id
+                ),
+                reply_markup=reply_markup,
+            )
+            return
+        else:
+            await message.reply_text(
+                text=START_MSG.format(
+                    first=message.from_user.first_name,
+                    last=message.from_user.last_name,
+                    username=None if not message.from_user.username else '@' + message.from_user.username,
+                    mention=message.from_user.mention,
+                    id=message.from_user.id
+                ),
+                reply_markup=reply_markup,
+                disable_web_page_preview=True,
+            )
+            return
 
 
 #=====================================================================================##
@@ -159,7 +171,7 @@ async def not_joined(client: Client, message: Message):
         quote = True,
         disable_web_page_preview = True
     )
-
+    
 @Bot.on_message(filters.command('users') & filters.private & filters.user(ADMINS))
 async def get_users(client: Bot, message: Message):
     msg = await client.send_message(chat_id=message.chat.id, text=WAIT_MSG)
